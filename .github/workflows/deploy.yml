@@ -1,0 +1,46 @@
+name: Deploy EC2 Instance
+
+on:
+  push:
+    paths:
+      - 'spec-files/**.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Display Repository Contents
+      run: |
+        ls -la
+        ls -la spec-files
+        
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      
+
+    - name: Display Terraform Configuration
+      run: |
+        cat spec-files/main.tf
+        cat spec-files/variables.tf
+
+    - name: Deploy EC2 Instance
+      run: |
+        cd spec-files
+        for file in *.yaml; do
+          INSTANCE_NAME=$(yq eval '.name' $file)
+          INSTANCE_CONTENT=$(yq eval '.content' $file)
+
+          echo "Deploying EC2 Instance: $INSTANCE_NAME with content: $INSTANCE_CONTENT"
+
+          terraform init
+          terraform apply -auto-approve -var="instance_name=$INSTANCE_NAME" -var="instance_content=$INSTANCE_CONTENT"
+        done
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+

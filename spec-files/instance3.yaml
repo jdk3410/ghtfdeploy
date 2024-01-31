@@ -1,0 +1,16 @@
+# Example spec file 
+
+name: my-in3ffstance-33f3
+content: |
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>llo World!</title>
+  </head>
+  <body>
+    <h1>ello, World!</h1>
+    <p>This is a simple Hello World webpage deployed on EC2.</p>
+    <p>originally from https://github.com/jdk3410/ghtfdeploy</p>
+  </body>
+  </html>
+
